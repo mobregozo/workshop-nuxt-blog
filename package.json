@@ -17,6 +17,7 @@
   },
   "scripts": {
     "dev": "nuxt",
+    "prod": "nuxt generate",
     "generate": "nuxt generate",
     "analyze": "nuxt build --analyze"
   },
