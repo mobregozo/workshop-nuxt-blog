@@ -65,7 +65,18 @@ module.exports = {
       const rule = config.module.rules.find(r => r.test.toString() === '/\\.(png|jpe?g|gif|svg|webp)$/i')
       config.module.rules.splice(config.module.rules.indexOf(rule), 1)
 
-      config.module.rules.push({
+      config.module.rules.push(
+        {
+          test: /\.md$/,
+          loader: 'frontmatter-markdown-loader',
+          include: path.resolve(__dirname, 'contents'),
+          options: {
+            mode: [Mode.VUE_RENDER_FUNCTIONS],
+            vue: {
+              root: "dynamicMarkdown"
+            }
+          }
+        },{
         test: /\.(jpe?g|png)$/i,
         loader: 'responsive-loader',
         options: {

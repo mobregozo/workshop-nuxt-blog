@@ -1,41 +1,62 @@
 <template>
   <div class="page-index">
     <div class="container">
-      <BlogSection :blogs="blogs"/>
+      <BlogSection :blogs="blogs" />
     </div>
   </div>
 </template>
 
 <script>
-  import BlogSection from "~/components/Sections/BlogSection"
+import BlogSection from "~/components/Sections/BlogSection";
+import blogsEn from "~/contents/en/blogsEn.js";
+import blogsEs from "~/contents/es/blogsEs.js";
 
-  export default {
-    async asyncData ({app}) {
-    },
-    
-    components: { BlogSection },
+export default {
+  async asyncData({ app }) {
+    const blogs = app.i18n.locale === "en" ? blogsEn : blogsEs;
 
-    head () {
+    async function asyncImport(blogName) {
+      const wholeMD = await import(
+        `~/contents/${app.i18n.locale}/blog/${blogName}.md`
+      );
+      return wholeMD.attributes;
+    }
+
+    return Promise.all(blogs.map(blog => asyncImport(blog))).then(res => {
       return {
-        title: "Workshop Nuxt blog",
-        htmlAttrs: {
-          lang: this.$i18n.locale,
-        },
-        meta: [
-          { name: "author", content: "Marina Aisa" },
-          { name: "description", property: "og:description", content: "Workshop Nuxt blog", hid: "description" },
-          { property: "og:title", content: "Workshop Nuxt blog" },
-          { property: "og:image", content: this.ogImage },
-          { name: "twitter:description", content: "Workshop Nuxt blog" },
-          { name: "twitter:image", content: this.ogImage }
-        ]
+        blogs: res
       };
-    },
+    });
+  },
 
-    computed: {
-      ogImage: function () {
-        return;
-      }
+  components: { BlogSection },
+
+  head() {
+    return {
+      title: "Workshop Nuxt blog",
+      htmlAttrs: {
+        lang: this.$i18n.locale
+      },
+      meta: [
+        { name: "author", content: "Marina Aisa" },
+        {
+          name: "description",
+          property: "og:description",
+          content: "Workshop Nuxt blog",
+          hid: "description"
+        },
+        { property: "og:title", content: "Workshop Nuxt blog" },
+        { property: "og:image", content: this.ogImage },
+        { name: "twitter:description", content: "Workshop Nuxt blog" },
+        { name: "twitter:image", content: this.ogImage }
+      ]
+    };
+  },
+
+  computed: {
+    ogImage: function() {
+      return;
     }
   }
+};
 </script>
